@@ -143,7 +143,7 @@ export default function Transactions() {
               fetchTransacciones();
             }}
           >
-            Search
+            Mostrar Transacciones
           </Button>
         </div>
       </div>

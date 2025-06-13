@@ -16,7 +16,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import FilterSection from "../../components/filterSection";
 import TableSection from "../../components/tableSection";
 import DropdownUserMenu from "../../components/dropdownUserMenu";
 import { Switch } from "@/components/ui/switch";
@@ -27,19 +26,10 @@ import {
   ArrowLeftRight,
   ChevronRight,
   Clipboard,
-  ClipboardCopy,
-  Flag,
-  Settings,
-  ShieldCheck,
   TableProperties,
   User,
 } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+
 import DailyReport from "../../components/screens/dailyReport";
 import Transactions from "../../components/screens/transactions";
 import AccountReport from "../../components/screens/accountReport";
@@ -251,7 +241,7 @@ function AdminCadenas() {
   return (
     <div className="w-full p-6">
       <SectionTitle title="Administrador de Cadenas" />
-      <TableSection hasAddButton buttonLabel="Anadir item" />
+      <TableSection hasAddButton buttonLabel="Añadir item" />
     </div>
   );
 }

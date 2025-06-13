@@ -15,7 +15,6 @@ import { toast } from "sonner";
 export default function DailyReport() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [cortes, setCortes] = useState([]);
 
@@ -48,7 +47,6 @@ export default function DailyReport() {
     },
   ];
   const titles = [
-    "ID",
     "Nombre",
     "Fecha",
     "# Transacciones",
@@ -128,36 +126,43 @@ export default function DailyReport() {
           />
         </div>
         <div className="flex justify-end">
-          <Button onClick={() => fetchDailyOutages()}>Search</Button>
+          <Button onClick={() => fetchDailyOutages()}>Mostrar Corte</Button>
         </div>
       </div>
-      {loading && (
-        <div className="flex items-center justify-center text-indigo-400">
-          Cargando...
-        </div>
-      )}
 
       <TableSection
         searchInput
         tableTitles={titles}
-        tableBody={cortes.map((item, key) => (
-          <TableRow key={key}>
-            <TableCell>{item.ID}</TableCell>
-            <TableCell>{item.Nombre}</TableCell>
-            <TableCell>{item.Fecha}</TableCell>
-            <TableCell className="text-center">
-              {item.NumTransacciones}
-            </TableCell>
-            <TableCell>{item.MontoTotal}</TableCell>
-            <TableCell>{item.Comision}</TableCell>
-            <TableCell>{item.Iva}</TableCell>
-            <TableCell className="text-center">
-              {item.NumDevoluciones}
-            </TableCell>
-            <TableCell>{item.MontoDevoluciones}</TableCell>
-            <TableCell>{item.SaldoTrans}</TableCell>
-          </TableRow>
-        ))}
+        tableBody={
+          loading ? (
+            <TableRow>
+              <TableCell
+                colSpan={10}
+                className="text-center text-indigo-500 text-base"
+              >
+                Cargando ...
+              </TableCell>
+            </TableRow>
+          ) : (
+            cortes.map((item, key) => (
+              <TableRow key={key}>
+                <TableCell>{item.Nombre}</TableCell>
+                <TableCell>{item.Fecha}</TableCell>
+                <TableCell className="text-center">
+                  {item.NumTransacciones}
+                </TableCell>
+                <TableCell>{item.MontoTotal}</TableCell>
+                <TableCell>{item.Comision}</TableCell>
+                <TableCell>{item.Iva}</TableCell>
+                <TableCell className="text-center">
+                  {item.NumDevoluciones}
+                </TableCell>
+                <TableCell>{item.MontoDevoluciones}</TableCell>
+                <TableCell>{item.SaldoTrans}</TableCell>
+              </TableRow>
+            ))
+          )
+        }
       />
     </div>
   );
