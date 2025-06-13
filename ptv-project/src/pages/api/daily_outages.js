@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   const { startDate, endDate } = req.body;
-  console.log(startDate, endDate)
+  console.log(startDate, endDate);
 
   const xmlRequest = `<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Header><OpHeader xmlns="https://servidorseguro.operacionesenlinea.com/"><OpKey1>${process.env.OPKEY_1}</OpKey1><OpKey2>${process.env.OPKEY_2}</OpKey2></OpHeader></soap:Header><soap:Body><OpCortesDiarios xmlns="https://servidorseguro.operacionesenlinea.com/"><request><comercioId>${process.env.COMMERCE}</comercioId><contrasena>${process.env.PASSWORD}</contrasena><FechaInicio>${startDate}</FechaInicio><FechaFin>${endDate}</FechaFin> </request></OpCortesDiarios></soap:Body></soap:Envelope>`;
 
@@ -35,7 +35,11 @@ export default async function handler(req, res) {
 
       console.log("OpTransacionesResult data ---- ", opCortesDiariosResult);
 
-      return res.status(200).json(opCortesDiariosResult.CorteDiario);
+      if (opCortesDiariosResult === "{}") {
+        return res.status(500).json({ message: "ERROR: Empty response." });
+      } else {
+        return res.status(200).json(opCortesDiariosResult.CorteDiario);
+      }
     } catch (error) {
       console.error("Error al parsear la respuesta XML:", error);
       // Envía la respuesta XML cruda si el parseo falla, para depuración

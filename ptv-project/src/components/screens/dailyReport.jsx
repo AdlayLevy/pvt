@@ -10,19 +10,16 @@ import { TableCell, TableRow } from "../ui/table";
 
 import DatePicker from "@/widgets/datePicker";
 import axios from "axios";
+import { toast } from "sonner";
 
 export default function DailyReport() {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [cortes, setCortes] = useState([]);
-  const [message, setMessage] = useState(null); 
 
-  useEffect(() => {
-    fetchDailyOutages();
-  }, []);
+  useEffect(() => {}, []);
 
   const data = [
     {
@@ -65,34 +62,46 @@ export default function DailyReport() {
 
   const fetchDailyOutages = async () => {
     setLoading(true);
-    setError(null);
-    setMessage(null);
     setCortes([]);
-    try {
-      const response = await axios.post("/api/daily_outages", {
-        startDate:'2025-05-26',
-        endDate:'2025-05-28'
-      });
-      console.log("RESPONSE DATA: ", response.data);
-      if(response.status === 200){
-        console.log('Response success:', response.status)
-        const updateCortes = [...data, response.data]
-        console.log(updateCortes)
-        setCortes(updateCortes)
-        setMessage('Cortes cargados exitosamente', response.data)
-      }else {
-        setError(
-          response.data.message || "Error desconocido al procesar la solicitud"
-        );
+    if (startDate === "" || endDate === "") {
+      toast.error(
+        "Campos de Fecha inicio y Fecha final no deben estar vacios. Intenta de nuevo."
+      );
+    } else {
+      try {
+        const response = await axios.post("/api/daily_outages", {
+          startDate: startDate,
+          endDate: endDate,
+        });
+        console.log("RESPONSE DATA: ", response.data);
+        if (response.status === 200) {
+          console.log("Response success:", response.status);
+          setCortes(response.data);
+          toast.success("Corte Diario cargado exitosamente");
+        } else {
+          toast.error(
+            response.data.message ||
+              "Error desconocido al procesar la solicitud"
+          );
+        }
+      } catch (err) {
+        console.log("Error al obtener el Corte Diario", err);
+        toast.error("Error al obtener el Corte Diario");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.log("Error al obtener el estado de cuenta:", err);
-    }finally{
-      setLoading(false)
     }
   };
 
-  return ( 
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
+  return (
     <div className="w-full p-6">
       <div className="pb-6 text-2xl font-bold text-indigo-800">
         Cortes Diarios
@@ -101,47 +110,25 @@ export default function DailyReport() {
         <h1 className="text-sm font-bold">Filters</h1>
         <div className="flex gap-6">
           <DatePicker
-            label="Fecha inicio"
+            label="Fecha inicio: *"
             date={startDate}
             setDate={(e) => {
-              let formatedDate = format(e, "yyyy-MM-dd");
-              setStartDate(formatedDate);
-              console.log(startDate);
+              const formattedDate = formatDate(e);
+              setStartDate(formattedDate);
             }}
           />
 
-          <div>
-            <div className="text-sm pb-2"> Fecha fin</div>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-[240px] justify-start text-left font-normal",
-                    !endDate && "text-muted-foreground"
-                  )}
-                >
-                  <Calendar1 />
-                  {endDate ? format(endDate, "PPP") : <span>Select date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={endDate}
-                  onSelect={(e) => {
-                    let formatedDate = format(e, "yyyy-MM-dd");
-                    setEndDate(formatedDate);
-                    console.log(endDate);
-                  }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+          <DatePicker
+            label="Fecha final: *"
+            date={endDate}
+            setDate={(e) => {
+              const formattedDate = formatDate(e);
+              setEndDate(formattedDate);
+            }}
+          />
         </div>
         <div className="flex justify-end">
-          <Button onClick={() => {}}>Search</Button>
+          <Button onClick={() => fetchDailyOutages()}>Search</Button>
         </div>
       </div>
       {loading && (
@@ -150,30 +137,23 @@ export default function DailyReport() {
         </div>
       )}
 
-      {error && (
-        <div className="flex items-center justify-center text-red-500">
-          Error: {error}
-        </div>
-      )}
-
-      {message && (
-        <div className="flex items-center justify-center text-indigo-400">
-          {message}
-        </div>
-      )}
       <TableSection
         searchInput
         tableTitles={titles}
-        tableBody={cortes.map((item) => (
-          <TableRow key={item.ID}>
+        tableBody={cortes.map((item, key) => (
+          <TableRow key={key}>
             <TableCell>{item.ID}</TableCell>
             <TableCell>{item.Nombre}</TableCell>
             <TableCell>{item.Fecha}</TableCell>
-            <TableCell className="text-center">{item.NumTransacciones}</TableCell>
+            <TableCell className="text-center">
+              {item.NumTransacciones}
+            </TableCell>
             <TableCell>{item.MontoTotal}</TableCell>
             <TableCell>{item.Comision}</TableCell>
             <TableCell>{item.Iva}</TableCell>
-            <TableCell className="text-center">{item.NumDevoluciones}</TableCell>
+            <TableCell className="text-center">
+              {item.NumDevoluciones}
+            </TableCell>
             <TableCell>{item.MontoDevoluciones}</TableCell>
             <TableCell>{item.SaldoTrans}</TableCell>
           </TableRow>

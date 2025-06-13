@@ -161,8 +161,8 @@ export default function Transactions() {
               </TableCell>
             </TableRow>
           ) : (
-            transactions.map((item) => (
-              <TableRow key={item.transaccionId}>
+            transactions.map((item, key) => (
+              <TableRow key={key}>
                 <TableCell>{item.transaccionId}</TableCell>
                 <TableCell>{item.tipoMovimiento}</TableCell>
                 <TableCell>{item.monto}</TableCell>
