@@ -17,13 +17,14 @@ export default function DatePicker(props) {
         <PopoverTrigger asChild>
           <Button
             variant="outline"
+            data-empty={!props.date}
             className={cn(
               "w-[240px] justify-start text-left font-normal",
               !props.date && "text-muted-foreground"
             )}
           >
             <Calendar1 />
-            {props.date ? format(props.date, "PPP") : <span>Select date</span>}
+            {props.date || <span>Seleciona una fecha</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">

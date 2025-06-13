@@ -19,8 +19,13 @@ import axios from "axios";
 import { toast } from "sonner";
 
 export default function Transactions() {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [deviceValue, setDeviceValue] = useState("");
+  const [versionValue, setVersionValue] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [transactions, setTransactions] = useState([]);
+  const [dateText, setDateText] = useState("");
   const titles = [
     "ID",
     "Tipo de Movimiento",
@@ -33,81 +38,67 @@ export default function Transactions() {
     "Tipo",
     "Más info",
   ];
-  const data = [
-    {
-      transaccionId: "1eb59ab781854f0397c3",
-      tipoMovimiento: "Abono",
-      resultado: "Declinada",
-      monto: "$5800",
-      fechaRegistro: "2025-05-26T16:52:00",
-      emisor: "BANREGIO",
-    },
-    {
-      transaccionId: "1eb59ab781854f0397c2",
-      tipoMovimiento: "Abono",
-      resultado: "Declinada",
-      monto: "$5800",
-      fechaRegistro: "2025-05-26T16:52:00",
-      emisor: "",
-    },
-  ];
-
+  const data = [];
   const devicesData = ["98282341249057"];
   const subcomerciosData = ["Subcomercio1", "Subcomercio2", "Subcomercio3"];
   const versionData = ["2024-03-12_10.00-v3"];
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [transactions, setTransactions] = useState([]);
-  const [message, setMessage] = useState(null); // For messages like "No transactions found"
-
-  useEffect(() => {
-    fetchTransacciones();
-  }, []);
+  useEffect(() => {}, []);
 
   const fetchTransacciones = async () => {
     setLoading(true);
-   
-    setError(null);
-    setMessage(null);
     setTransactions([]); // Clear previous transactions
-    try {
-      const response = await axios.post("/api/transactions", {
-        transactionId: "",
-        startDate: "2025-05-26",
-        endDate: "2025-05-28",
-        deviceId: "98282341249057",
-        subCommerce: "",
-        version: "2024-03-12_10.00-v3",
-      });
-
-      console.log("RESPONSE DATA", response.data);
-
-      if (response.status === 200) {
-        console.log("RESPONSE SUCCESS:", response.status);
-        const updateTransactions = [...data, response.data];
-        console.log("DATA UPDATED", updateTransactions);
-        setTransactions(updateTransactions);
-        toast.success('Success')
-      } else {
-        setError(
-          response.data.message || "Error desconocido al procesar la solicitud"
-        );
-      }
-    } catch (err) {
-      console.error("Error al obtener transacciones:", err);
-      setError(
-        "Hubo un error al obtener transacciones. Por favor, inténtelo de nuevo."
+    if (startDate === "" || endDate === "") {
+      toast.error(
+        "Campos de Fecha inicio y fecha final no deben estar vacios. Intenta de nuevo."
       );
-      if (err.response) {
-        console.error("Detalles del error:", err.response.data);
+    } else {
+      try {
+        const response = await axios.post("/api/transactions", {
+          transactionId: "",
+          startDate: startDate,
+          endDate: endDate,
+          deviceId: deviceValue,
+          subCommerce: "",
+          version: versionValue,
+        });
+
+        console.log("RESPONSE DATA", response.data);
+
+        if (response.status === 200) {
+          console.log("RESPONSE SUCCESS:", response.status); 
+
+          //const updateTransactions = [...data, response.data];
+          console.log("DATA UPDATED");
+          setTransactions(response.data);
+          toast.success("Transacciones cargadas exitosamente");
+        } else {
+          toast.error(
+            response.data.message ||
+              "Error desconocido al procesar la solicitud"
+          );
+        }
+      } catch (err) {
+        console.error("ERROR al obtener transacciones:", err);
+        toast.error(
+          "Hubo un ERROR al obtener transacciones. Por favor, inténtelo de nuevo."
+        );
+        if (err.response) {
+          console.error("Detalles del ERROR:", err.response.data);
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
-  
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
 
   return (
     <div className="w-full p-6">
@@ -118,58 +109,83 @@ export default function Transactions() {
         <h1 className="text-sm font-bold pb-3">Filters</h1>
         <div className="grid grid-cols-4 gap-6">
           <DatePicker
-            label="Fecha inicio"
+            label="Fecha inicio: *"
             date={startDate}
-            setDate={setStartDate}
+            setDate={(e) => {
+              console.log(e);
+              const formattedDate = formatDate(e);
+              setStartDate(formattedDate);
+            }}
           />
-          <DatePicker label="Fecha fin" date={endDate} setDate={setEndDate} />
-          <InputSelect label="DeviceID" selectItems={devicesData} />
-          <InputSelect label="Subcomercio" selectItems={subcomerciosData} />
-          <InputSelect label="Version" selectItems={versionData} />
+          <DatePicker
+            label="Fecha final: *"
+            date={endDate}
+            setDate={(e) => {
+              const formattedDate = formatDate(e);
+              setEndDate(formattedDate);
+            }}
+          />
+          <InputSelect
+            label="ID de Dispositivo:"
+            selectItems={devicesData}
+            setValue={(e) => setDeviceValue(e)}
+          />
+          <InputSelect label="Subcomercio:" selectItems={subcomerciosData} />
+          <InputSelect
+            label="Version:"
+            selectItems={versionData}
+            setValue={(e) => setVersionValue(e)}
+          />
         </div>
         <div className="flex justify-end">
-          <Button onClick={() => {}}>Search</Button>
+          <Button
+            onClick={() => {
+              fetchTransacciones();
+            }}
+          >
+            Search
+          </Button>
         </div>
       </div>
-      {loading && (
-        <div className="flex items-center justify-center text-indigo-400">
-          Cargando...
-        </div>
-      )}
-
-      {error && (
-        <div className="flex items-center justify-center text-red-500">
-          Error: {error}
-        </div>
-      )}
-
-
       <TableSection
         searchInput
         tableTitles={titles}
-        tableBody={transactions.map((item) => (
-          <TableRow key={item.transaccionId}>
-            <TableCell>{item.transaccionId}</TableCell>
-            <TableCell>{item.tipoMovimiento}</TableCell>
-            <TableCell>{item.monto}</TableCell>
-            <TableCell>{item.propina}</TableCell>
-            <TableCell>{item.resultado}</TableCell>
-            <TableCell>{item.tarjeta}</TableCell>
-            <TableCell>{item.emisor}</TableCell>
-            <TableCell>{item.marca}</TableCell>
-            <TableCell>{item.tipo}</TableCell>
-            <div className="flex justify-center">
-              <AlertDialog>
-                <AlertDialogTrigger>
-                  <TableCell className="text-right">
-                    <Plus size={20} />
-                  </TableCell>
-                </AlertDialogTrigger>
-                <MoreInformation info={item} />
-              </AlertDialog>
-            </div>
-          </TableRow>
-        ))}
+        tableBody={
+          loading ? (
+            <TableRow>
+              <TableCell
+                colSpan={10}
+                className="text-center text-indigo-500 text-base"
+              >
+                Cargando ...
+              </TableCell>
+            </TableRow>
+          ) : (
+            transactions.map((item) => (
+              <TableRow key={item.transaccionId}>
+                <TableCell>{item.transaccionId}</TableCell>
+                <TableCell>{item.tipoMovimiento}</TableCell>
+                <TableCell>{item.monto}</TableCell>
+                <TableCell>{item.propina}</TableCell>
+                <TableCell>{item.resultado}</TableCell>
+                <TableCell>{item.tarjeta}</TableCell>
+                <TableCell>{item.emisor}</TableCell>
+                <TableCell>{item.marca}</TableCell>
+                <TableCell>{item.tipo}</TableCell>
+                <div className="flex justify-center">
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <div className="p-6">
+                        <Plus size={20} />
+                      </div>
+                    </AlertDialogTrigger>
+                    <MoreInformation info={item} />
+                  </AlertDialog>
+                </div>
+              </TableRow>
+            ))
+          )
+        }
       />
     </div>
   );
@@ -230,6 +246,7 @@ function MoreInformation(props) {
               title="Fecha de Registro: "
               info={props.info.fechaRegistro}
             />
+
             <TextTitle title="Tarjeta: " info={props.info.tarjeta} />
             <TextTitle
               title="Mes - Año: "

@@ -7,6 +7,8 @@ export default async function handler(req, res) {
   }
   const { transactionId, startDate, endDate, deviceId, subCommerce, version } =
     req.body;
+
+  console.log(deviceId, version);
   const xmlRequest = `<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Header><OpHeader xmlns="https://servidorseguro.operacionesenlinea.com/"><OpKey1>${process.env.OPKEY_1}</OpKey1> <OpKey2>${process.env.OPKEY_2}</OpKey2></OpHeader></soap:Header><soap:Body><OpTransacciones xmlns="https://servidorseguro.operacionesenlinea.com/"><request><comercioId>${process.env.COMMERCE}</comercioId><contrasena>${process.env.PASSWORDS}</contrasena><transaccionId>${transactionId}</transaccionId><FechaInicio>${startDate}</FechaInicio><FechaFin>${endDate}</FechaFin><deviceId>${deviceId}</deviceId><subcomercio>${subCommerce}</subcomercio><version>${version}</version></request></OpTransacciones></soap:Body></soap:Envelope>`;
   const configHeaders = {
     "Content-Type": "text/xml;charset=UTF-8",
@@ -31,12 +33,16 @@ export default async function handler(req, res) {
 
       console.log("OpTransacionesResult data ---- ", opTransaccionesResult);
 
-      return res.status(200).json(opTransaccionesResult.Transaccion);
+      if (opTransaccionesResult === "{}") {
+        return res.status(500).json({ message: "ERROR: Empty response." });
+      } else {
+        return res.status(200).json(opTransaccionesResult.Transaccion);
+      }
     } catch (err) {
-      console.error("Error al parsear la respuesta XML:", parseError);
+      console.error("ERROR parsing XML response:", parseError);
       // Envía la respuesta XML cruda si el parseo falla, para depuración
       return res.status(500).json({
-        message: "Error parsing SOAP response",
+        message: "ERROR parsing SOAP response",
         rawResponse: soapResponse.data,
       });
     }
@@ -53,7 +59,7 @@ export default async function handler(req, res) {
         // The request was made but no response was received
         // This often indicates a network error, DNS issue, or firewall
         console.error("Type: No response received (Network/Connection Error)");
-        console.error("Error Message:", error.message); // e.g., "Network Error", "Timeout of 10000ms exceeded"
+        console.error("ERROR Message:", error.message); // e.g., "Network Error", "Timeout of 10000ms exceeded"
         console.error(
           "Request Object (details of what was sent):",
           error.request
@@ -61,19 +67,19 @@ export default async function handler(req, res) {
       } else {
         // Something happened in setting up the request that triggered an Error
         console.error("Type: Request setup error");
-        console.error("Error Message:", error.message);
+        console.error("ERROR Message:", error.message);
       }
       console.error("Axios Config:", error.config); // The configuration used for the request
     } else {
       // Any other unexpected error
       console.error("Type: Unexpected general error");
-      console.error("Error Object:", error);
+      console.error("ERROR Object:", error);
     }
     console.error("------------------------------------------");
 
     // Send a generic error response back to the client for security
     return res
       .status(500)
-      .json({ message: "Error al contactar el servicio SOAP externo." });
+      .json({ message: "ERROR communicating with SOAP external service." });
   }
 }
