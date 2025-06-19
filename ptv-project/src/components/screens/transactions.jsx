@@ -25,7 +25,9 @@ export default function Transactions() {
   const [versionValue, setVersionValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
-  const [dateText, setDateText] = useState("");
+  const [openStartDate, setOpenStartDate] = useState(false);
+  const [openEndDate, setOpenEndDate] = useState(false);
+
   const titles = [
     "ID",
     "Tipo de Movimiento",
@@ -66,7 +68,7 @@ export default function Transactions() {
         console.log("RESPONSE DATA", response.data);
 
         if (response.status === 200) {
-          console.log("RESPONSE SUCCESS:", response.status); 
+          console.log("RESPONSE SUCCESS:", response.status);
 
           //const updateTransactions = [...data, response.data];
           console.log("DATA UPDATED");
@@ -81,7 +83,7 @@ export default function Transactions() {
       } catch (err) {
         console.error("ERROR al obtener transacciones:", err);
         toast.error(
-          "Hubo un ERROR al obtener transacciones. Por favor, inténtelo de nuevo."
+           "Hubo un ERROR al obtener transacciones. Por favor, inténtelo de nuevo."
         );
         if (err.response) {
           console.error("Detalles del ERROR:", err.response.data);
@@ -110,19 +112,25 @@ export default function Transactions() {
         <div className="grid grid-cols-4 gap-6">
           <DatePicker
             label="Fecha inicio: *"
+            open={openStartDate}
+            setOpen={() => setOpenStartDate(true)}
             date={startDate}
             setDate={(e) => {
               console.log(e);
               const formattedDate = formatDate(e);
               setStartDate(formattedDate);
+              setOpenStartDate(false);
             }}
           />
           <DatePicker
             label="Fecha final: *"
+            open={openEndDate}
+            setOpen={() => setOpenEndDate(true)}
             date={endDate}
             setDate={(e) => {
               const formattedDate = formatDate(e);
               setEndDate(formattedDate);
+              setOpenEndDate(false);
             }}
           />
           <InputSelect

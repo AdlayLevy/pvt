@@ -8,12 +8,16 @@ import { Calendar } from "../components/ui/calendar";
 import { Calendar1 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { useState } from "react";
 
 export default function DatePicker(props) {
+
+
+
   return (
     <div>
       <div className="text-sm pb-2"> {props.label}</div>
-      <Popover>
+      <Popover open={props.open} onOpenChange={props.setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -27,7 +31,7 @@ export default function DatePicker(props) {
             {props.date || <span>Seleciona una fecha</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
             mode="single"
             selected={props.date}

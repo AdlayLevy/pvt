@@ -33,7 +33,7 @@ export default async function handler(req, res) {
 
       console.log("OpTransacionesResult data ---- ", opTransaccionesResult);
 
-      if (opTransaccionesResult === "{}") {
+      if (opTransaccionesResult === "") {
         return res.status(500).json({ message: "ERROR: Empty response." });
       } else {
         return res.status(200).json(opTransaccionesResult.Transaccion);

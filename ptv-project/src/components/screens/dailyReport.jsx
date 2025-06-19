@@ -14,9 +14,11 @@ import { toast } from "sonner";
 
 export default function DailyReport() {
   const [startDate, setStartDate] = useState("");
+  const [cortes, setCortes] = useState([]);
   const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const [cortes, setCortes] = useState([]);
+  const [openStartDate, setOpenStartDate] = useState(false);
+  const [openEndDate, setOpenEndDate] = useState(false);
 
   useEffect(() => {}, []);
 
@@ -109,19 +111,25 @@ export default function DailyReport() {
         <div className="flex gap-6">
           <DatePicker
             label="Fecha inicio: *"
+            open={openStartDate}
+            setOpen={() => setOpenStartDate(true)}
             date={startDate}
             setDate={(e) => {
               const formattedDate = formatDate(e);
               setStartDate(formattedDate);
+              setOpenStartDate(false);
             }}
           />
 
           <DatePicker
             label="Fecha final: *"
+            open={openEndDate}
+            setOpen={() => setOpenEndDate(true)}
             date={endDate}
             setDate={(e) => {
               const formattedDate = formatDate(e);
               setEndDate(formattedDate);
+              setOpenEndDate(false);
             }}
           />
         </div>
