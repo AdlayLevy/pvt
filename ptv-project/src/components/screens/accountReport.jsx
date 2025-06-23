@@ -5,6 +5,9 @@ import { TableRow, TableCell } from "../ui/table";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import InputSelect from "@/widgets/inputSelect";
+import TitleFilterSection from "@/widgets/titleFilterSection";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { CSVLink } from "react-csv";
 
 export default function AccountReport() {
   const [loading, setLoading] = useState(false);
@@ -13,12 +16,43 @@ export default function AccountReport() {
   const [periodValue, setPeriodValue] = useState("");
   const [subCommerceValue, setSubCommerceValue] = useState("");
   const [versionValue, setVersionValue] = useState("");
+  const isMobile = useIsMobile();
 
   useEffect(() => {}, []);
 
   const titles = ["Item", "Concepto", "Total"];
 
   const data = [];
+
+  const filters = [
+    {
+      filter: (
+        <InputSelect
+          label="Periodo: *"
+          selectItems={[" 1", "2", " 3"]}
+          setValue={(e) => setPeriodValue(e)}
+        />
+      ),
+    },
+    {
+      filter: (
+        <InputSelect
+          label="Version:"
+          selectItems={["2024-03-12_10.00-v3"]}
+          setValue={(e) => setVersionValue(e)}
+        />
+      ),
+    },
+    {
+      filter: (
+        <InputSelect
+          label="SubComercio:"
+          selectItems={["SubComercio 1", "SubComercio 2", "SubComercio 3"]}
+          setValue={(e) => setSubCommerceValue(e)}
+        />
+      ),
+    },
+  ];
 
   const fetchAccountReport = async () => {
     setLoading(true);
@@ -56,35 +90,12 @@ export default function AccountReport() {
 
   return (
     <div className="w-full p-6">
-      <div className="pb-6 text-2xl font-bold text-indigo-800">
-        Estado de Cuenta
-      </div>
-      <div className="p-6 bg-gray-50 mb-6 rounded-lg">
-        <h1 className="text-sm font-bold pb-3">Filters</h1>
-        <div className="grid grid-cols-4 gap-6">
-          <InputSelect
-            label="Periodo: *"
-            selectItems={[" 1", "2", " 3"]}
-            setValue={(e) => setPeriodValue(e)}
-          />
-          <InputSelect
-            label="Version:"
-            selectItems={["2024-03-12_10.00-v3"]}
-            setValue={(e) => setVersionValue(e)}
-          />
-          <InputSelect
-            label="SubComercio:"
-            selectItems={["SubComercio 1", "SubComercio 2", "SubComercio 3"]}
-            setValue={(e) => setSubCommerceValue(e)}
-          />
-        </div>
-        <div className="flex justify-end">
-          <Button onClick={() => fetchAccountReport()}>
-            Mostrar Estado de Cuenta
-          </Button>
-        </div>
-      </div>
-
+      <TitleFilterSection
+        titleSection="Estado de Cuenta"
+        filters={filters}
+        buttonText=" Mostrar Estado de Cuenta"
+        buttonFunction={() => fetchAccountReport()}
+      />
       <div className="p-6 bg-gray-50 mb-6 rounded-lg">
         <h1 className="text-sm font-bold pb-3">Cliente</h1>
         <div className="grid grid-cols-4">
@@ -111,30 +122,48 @@ export default function AccountReport() {
         </div>
       </div>
 
-      <TableSection
-        searchInput
-        tableTitles={titles}
-        tableBody={
-          loading ? (
-            <TableRow>
-              <TableCell
-                colSpan={10}
-                className="text-center text-indigo-500 text-base"
-              >
-                Cargando ...
-              </TableCell>
-            </TableRow>
-          ) : (
-            report.map((item, key) => (
-              <TableRow key={key}>
-                <TableCell>{item.Item}</TableCell>
-                <TableCell>{item.Concepto}</TableCell>
-                <TableCell>{item.Total}</TableCell>
+      {isMobile ? (
+        <div className="p-6 bg-gray-50 rounded-lg">
+          <p className="text-center">
+            Demasiados datos para mostrar en este dispositivo
+          </p>
+          <div className="flex p-6 justify-center">
+            <Button disabled={report.length > 0 ? false : true}>
+              <CSVLink data={report}>Descargar CSV</CSVLink>
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <TableSection
+          searchInput
+          tableTitles={titles}
+          downloadButton={
+            <Button disabled={report.length > 0 ? false : true}>
+              <CSVLink data={report}>Descargar CSV</CSVLink>
+            </Button>
+          }
+          tableBody={
+            loading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={10}
+                  className="text-center text-indigo-500 text-base"
+                >
+                  Cargando ...
+                </TableCell>
               </TableRow>
-            ))
-          )
-        }
-      />
+            ) : (
+              report.map((item, key) => (
+                <TableRow key={key}>
+                  <TableCell>{item.Item}</TableCell>
+                  <TableCell>{item.Concepto}</TableCell>
+                  <TableCell>{item.Total}</TableCell>
+                </TableRow>
+              ))
+            )
+          }
+        />
+      )}
     </div>
   );
 }

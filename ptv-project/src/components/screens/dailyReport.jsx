@@ -7,10 +7,13 @@ import { Calendar1 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { TableCell, TableRow } from "../ui/table";
+import { CSVLink } from "react-csv";
 
 import DatePicker from "@/widgets/datePicker";
 import axios from "axios";
 import { toast } from "sonner";
+import TitleFilterSection from "@/widgets/titleFilterSection";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function DailyReport() {
   const [startDate, setStartDate] = useState("");
@@ -19,6 +22,7 @@ export default function DailyReport() {
   const [loading, setLoading] = useState(false);
   const [openStartDate, setOpenStartDate] = useState(false);
   const [openEndDate, setOpenEndDate] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {}, []);
 
@@ -58,6 +62,39 @@ export default function DailyReport() {
     "# Devoluciones",
     "Monto Devoluciones",
     "Saldo Trans",
+  ];
+
+  const filters = [
+    {
+      filter: (
+        <DatePicker
+          label="Fecha inicio: *"
+          open={openStartDate}
+          setOpen={() => setOpenStartDate(true)}
+          date={startDate}
+          setDate={(e) => {
+            const formattedDate = formatDate(e);
+            setStartDate(formattedDate);
+            setOpenStartDate(false);
+          }}
+        />
+      ),
+    },
+    {
+      filter: (
+        <DatePicker
+          label="Fecha final: *"
+          open={openEndDate}
+          setOpen={() => setOpenEndDate(true)}
+          date={endDate}
+          setDate={(e) => {
+            const formattedDate = formatDate(e);
+            setEndDate(formattedDate);
+            setOpenEndDate(false);
+          }}
+        />
+      ),
+    },
   ];
 
   const fetchDailyOutages = async () => {
@@ -103,75 +140,64 @@ export default function DailyReport() {
 
   return (
     <div className="w-full p-6">
-      <div className="pb-6 text-2xl font-bold text-indigo-800">
-        Cortes Diarios
-      </div>
-      <div className="p-6 bg-gray-50 mb-6 rounded-lg space-y-6">
-        <h1 className="text-sm font-bold">Filters</h1>
-        <div className="flex gap-6">
-          <DatePicker
-            label="Fecha inicio: *"
-            open={openStartDate}
-            setOpen={() => setOpenStartDate(true)}
-            date={startDate}
-            setDate={(e) => {
-              const formattedDate = formatDate(e);
-              setStartDate(formattedDate);
-              setOpenStartDate(false);
-            }}
-          />
-
-          <DatePicker
-            label="Fecha final: *"
-            open={openEndDate}
-            setOpen={() => setOpenEndDate(true)}
-            date={endDate}
-            setDate={(e) => {
-              const formattedDate = formatDate(e);
-              setEndDate(formattedDate);
-              setOpenEndDate(false);
-            }}
-          />
-        </div>
-        <div className="flex justify-end">
-          <Button onClick={() => fetchDailyOutages()}>Mostrar Corte</Button>
-        </div>
-      </div>
-
-      <TableSection
-        searchInput
-        tableTitles={titles}
-        tableBody={
-          loading ? (
-            <TableRow>
-              <TableCell
-                colSpan={10}
-                className="text-center text-indigo-500 text-base"
-              >
-                Cargando ...
-              </TableCell>
-            </TableRow>
-          ) : (
-            cortes.map((item, key) => (
-              <TableRow key={key}>
-                <TableCell>{item.Nombre}</TableCell>
-                <TableCell>{item.Fecha}</TableCell>
-                <TableCell className="text-center">
-                  {item.NumTransacciones}
-                </TableCell>
-                <TableCell>{item.MontoTotal}</TableCell>
-                <TableCell>{item.Comision}</TableCell>
-                <TableCell>{item.Iva}</TableCell>
-                <TableCell className="text-center">
-                  {item.NumDevoluciones}
-                </TableCell>
-                <TableCell>{item.MontoDevoluciones}</TableCell>
-                <TableCell>{item.SaldoTrans}</TableCell>
-              </TableRow>
-            ))
-          )
-        }
+      <TitleFilterSection
+        titleSection="Cortes Diarios"
+        filters={filters}
+        buttonText="Mostrar Corte"
+        buttonFunction={() => fetchDailyOutages()}
       />
+      {isMobile ? (
+        <div className="p-6 bg-gray-50 rounded-lg">
+          <p className="text-center">
+            Demasiados datos para mostrar en este dispositivo
+          </p>
+          <div className="flex p-6 justify-center">
+            <Button disabled={cortes.length > 0 ? false : true}>
+              <CSVLink data={cortes}>Descargar CSV</CSVLink>
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <TableSection
+          searchInput
+          tableTitles={titles}
+          downloadButton={
+            <Button disabled={cortes.length > 0 ? false : true}>
+              <CSVLink data={cortes}>Descargar CSV</CSVLink>
+            </Button>
+          }
+          tableBody={
+            loading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={10}
+                  className="text-center text-indigo-500 text-base"
+                >
+                  Cargando ...
+                </TableCell>
+              </TableRow>
+            ) : (
+              cortes.map((item, key) => (
+                <TableRow key={key}>
+                  <TableCell>{item.Nombre}</TableCell>
+                  <TableCell>{item.Fecha}</TableCell>
+                  <TableCell className="text-center">
+                    {item.NumTransacciones}
+                  </TableCell>
+                  <TableCell>{item.MontoTotal}</TableCell>
+                  <TableCell>{item.Comision}</TableCell>
+                  <TableCell>{item.Iva}</TableCell>
+                  <TableCell className="text-center">
+                    {item.NumDevoluciones}
+                  </TableCell>
+                  <TableCell>{item.MontoDevoluciones}</TableCell>
+                  <TableCell>{item.SaldoTrans}</TableCell>
+                </TableRow>
+              ))
+            )
+          }
+        />
+      )}
     </div>
   );
 }

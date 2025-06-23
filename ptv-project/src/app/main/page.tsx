@@ -135,10 +135,10 @@ export default function Main() {
                 <SidebarGroupLabel>Payment Web</SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {menu.map((item) => (
+                    {menu.map((item, key) => (
                       <div>
                         {item.submenu.length > 0 ? (
-                          <Collapsible key={item.title} asChild>
+                          <Collapsible key={key} asChild>
                             <SidebarMenuItem>
                               <CollapsibleTrigger asChild>
                                 <SidebarMenuButton className="flex items-center py-7">
@@ -151,8 +151,8 @@ export default function Main() {
                               </CollapsibleTrigger>
                               <CollapsibleContent>
                                 <SidebarMenuSub>
-                                  {item.submenu.map((submenu) => (
-                                    <SidebarMenuSubItem key={submenu}>
+                                  {item.submenu.map((submenu, key) => (
+                                    <SidebarMenuSubItem key={key}>
                                       <SidebarMenuButton
                                         asChild
                                         onClick={() => setActiveTab(submenu)}
@@ -198,10 +198,10 @@ export default function Main() {
                 <div>Company Name</div>
               </div>
               <div className="flex items-center space-x-6">
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <Switch id="language" />
                   <Label htmlFor="language">ENG /ESP</Label>
-                </div>
+                </div> */}
                 <DropdownUserMenu />
               </div>
             </header>

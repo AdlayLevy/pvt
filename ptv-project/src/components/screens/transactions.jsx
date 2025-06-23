@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { TableCell, TableRow } from "../ui/table";
 import DatePicker from "../../widgets/datePicker";
 import InputSelect from "../../widgets/inputSelect";
+import TitleFilterSection from "../../widgets/titleFilterSection";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -17,6 +18,8 @@ import {
 } from "../ui/alert-dialog";
 import axios from "axios";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { CSVLink } from "react-csv";
 
 export default function Transactions() {
   const [startDate, setStartDate] = useState("");
@@ -32,7 +35,6 @@ export default function Transactions() {
     "ID",
     "Tipo de Movimiento",
     "Monto",
-    "Comision",
     "Resultado",
     "Tarjeta",
     "Emisor",
@@ -44,6 +46,63 @@ export default function Transactions() {
   const devicesData = ["98282341249057"];
   const subcomerciosData = ["Subcomercio1", "Subcomercio2", "Subcomercio3"];
   const versionData = ["2024-03-12_10.00-v3"];
+  const filters = [
+    {
+      filter: (
+        <DatePicker
+          label="Fecha inicio: *"
+          open={openStartDate}
+          setOpen={() => setOpenStartDate(true)}
+          date={startDate}
+          setDate={(e) => {
+            console.log(e);
+            const formattedDate = formatDate(e);
+            setStartDate(formattedDate);
+            setOpenStartDate(false);
+          }}
+        />
+      ),
+    },
+    {
+      filter: (
+        <DatePicker
+          label="Fecha final: *"
+          open={openEndDate}
+          setOpen={() => setOpenEndDate(true)}
+          date={endDate}
+          setDate={(e) => {
+            const formattedDate = formatDate(e);
+            setEndDate(formattedDate);
+            setOpenEndDate(false);
+          }}
+        />
+      ),
+    },
+    {
+      filter: (
+        <InputSelect
+          label="ID de Dispositivo:"
+          selectItems={devicesData}
+          setValue={(e) => setDeviceValue(e)}
+        />
+      ),
+    },
+    {
+      filter: (
+        <InputSelect label="Subcomercio:" selectItems={subcomerciosData} />
+      ),
+    },
+    {
+      filter: (
+        <InputSelect
+          label="Version:"
+          selectItems={versionData}
+          setValue={(e) => setVersionValue(e)}
+        />
+      ),
+    },
+  ];
+  const isMobile = useIsMobile();
 
   useEffect(() => {}, []);
 
@@ -83,7 +142,7 @@ export default function Transactions() {
       } catch (err) {
         console.error("ERROR al obtener transacciones:", err);
         toast.error(
-           "Hubo un ERROR al obtener transacciones. Por favor, inténtelo de nuevo."
+          "Hubo un ERROR al obtener transacciones. Por favor, inténtelo de nuevo."
         );
         if (err.response) {
           console.error("Detalles del ERROR:", err.response.data);
@@ -104,97 +163,75 @@ export default function Transactions() {
 
   return (
     <div className="w-full p-6">
-      <div className="pb-6 text-2xl font-bold text-indigo-800">
-        Transacciones
-      </div>
-      <div className="p-6 bg-gray-50 mb-6 rounded-lg">
-        <h1 className="text-sm font-bold pb-3">Filters</h1>
-        <div className="grid grid-cols-4 gap-6">
-          <DatePicker
-            label="Fecha inicio: *"
-            open={openStartDate}
-            setOpen={() => setOpenStartDate(true)}
-            date={startDate}
-            setDate={(e) => {
-              console.log(e);
-              const formattedDate = formatDate(e);
-              setStartDate(formattedDate);
-              setOpenStartDate(false);
-            }}
-          />
-          <DatePicker
-            label="Fecha final: *"
-            open={openEndDate}
-            setOpen={() => setOpenEndDate(true)}
-            date={endDate}
-            setDate={(e) => {
-              const formattedDate = formatDate(e);
-              setEndDate(formattedDate);
-              setOpenEndDate(false);
-            }}
-          />
-          <InputSelect
-            label="ID de Dispositivo:"
-            selectItems={devicesData}
-            setValue={(e) => setDeviceValue(e)}
-          />
-          <InputSelect label="Subcomercio:" selectItems={subcomerciosData} />
-          <InputSelect
-            label="Version:"
-            selectItems={versionData}
-            setValue={(e) => setVersionValue(e)}
-          />
-        </div>
-        <div className="flex justify-end">
-          <Button
-            onClick={() => {
-              fetchTransacciones();
-            }}
-          >
-            Mostrar Transacciones
-          </Button>
-        </div>
-      </div>
-      <TableSection
-        searchInput
-        tableTitles={titles}
-        tableBody={
-          loading ? (
-            <TableRow>
-              <TableCell
-                colSpan={10}
-                className="text-center text-indigo-500 text-base"
-              >
-                Cargando ...
-              </TableCell>
-            </TableRow>
-          ) : (
-            transactions.map((item, key) => (
-              <TableRow key={key}>
-                <TableCell>{item.transaccionId}</TableCell>
-                <TableCell>{item.tipoMovimiento}</TableCell>
-                <TableCell>{item.monto}</TableCell>
-                <TableCell>{item.propina}</TableCell>
-                <TableCell>{item.resultado}</TableCell>
-                <TableCell>{item.tarjeta}</TableCell>
-                <TableCell>{item.emisor}</TableCell>
-                <TableCell>{item.marca}</TableCell>
-                <TableCell>{item.tipo}</TableCell>
-                <div className="flex justify-center">
-                  <AlertDialog>
-                    <AlertDialogTrigger>
-                      <div className="p-6">
-                        <Plus size={20} />
-                      </div>
-                    </AlertDialogTrigger>
-                    <MoreInformation info={item} />
-                  </AlertDialog>
-                </div>
-              </TableRow>
-            ))
-          )
-        }
+      <TitleFilterSection
+        titleSection="Transacciones"
+        filters={filters}
+        buttonText="Mostrar transacciones"
+        buttonFunction={() => {
+          fetchTransacciones();
+        }}
       />
+      {isMobile ? (
+        <div className="p-6 bg-gray-50 rounded-lg ">
+          <p className="text-center">
+            Demasiados datos para mostrar en este dispositivo.
+          </p>
+
+          <div className="flex p-6 justify-center">
+            <Button disabled={transactions.length > 0 ? false : true}>
+              <CSVLink data={transactions}>Descargar CSV</CSVLink>
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <TableSection
+          searchInput
+          tableToDownload={transactions}
+          tableTitles={titles}
+          downloadButton={
+            <Button disabled={transactions.length > 0 ? false : true}>
+              <CSVLink data={transactions}>Descargar CSV</CSVLink>
+            </Button>
+          }
+          tableBody={
+            loading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={10}
+                  className="text-center text-indigo-500 text-base"
+                >
+                  Cargando ...
+                </TableCell>
+              </TableRow>
+            ) : (
+              transactions.map((item, key) => (
+                <TableRow key={key} className="text-xs">
+                  <TableCell>{item.transaccionId}</TableCell>
+                  <TableCell className="text-center">
+                    {item.tipoMovimiento}
+                  </TableCell>
+                  <TableCell>{item.monto}</TableCell>
+                  <TableCell>{item.resultado}</TableCell>
+                  <TableCell>{item.tarjeta}</TableCell>
+                  <TableCell>{item.emisor}</TableCell>
+                  <TableCell>{item.marca}</TableCell>
+                  <TableCell>{item.tipo}</TableCell>
+                  <div className="flex justify-center">
+                    <AlertDialog>
+                      <AlertDialogTrigger>
+                        <div className="p-6">
+                          <Plus size={20} />
+                        </div>
+                      </AlertDialogTrigger>
+                      <MoreInformation info={item} />
+                    </AlertDialog>
+                  </div>
+                </TableRow>
+              ))
+            )
+          }
+        />
+      )}
     </div>
   );
 }

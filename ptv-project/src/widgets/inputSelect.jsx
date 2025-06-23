@@ -13,7 +13,7 @@ export default function InputSelect(props) {
     <div>
       <div className="text-sm pb-2">{props.label}</div>
       <Select onValueChange={props.setValue}>
-        <SelectTrigger className="w-[240px]">
+        <SelectTrigger className="w-[200px] ">
           <SelectValue placeholder="Select item" />
         </SelectTrigger>
         <SelectContent>
