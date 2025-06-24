@@ -1,4 +1,5 @@
 import axios from "axios";
+import { xml2js } from "xml2js";
 
 export default async function handler(req, res) {
   // Solo permitir solicitudes POST para esta API Route
@@ -20,8 +21,8 @@ export default async function handler(req, res) {
       timeout: 10000,
     });
     let parsedResponse;
+
     try {
-      const xml2js = require("xml2js");
       const parseString = xml2js.parseStringPromise; // Para parsear XML
       parsedResponse = await parseString(soapResponse.data, {
         explicitArray: false,
@@ -38,8 +39,8 @@ export default async function handler(req, res) {
       } else {
         return res.status(200).json(opTransaccionesResult.Transaccion);
       }
-    } catch (err) {
-      console.error("ERROR parsing XML response:", parseError);
+    } catch (error) {
+      console.error("ERROR parsing XML response:", error);
       // Envía la respuesta XML cruda si el parseo falla, para depuración
       return res.status(500).json({
         message: "ERROR parsing SOAP response",

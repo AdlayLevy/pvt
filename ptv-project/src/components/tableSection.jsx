@@ -41,8 +41,8 @@ export default function TableSection(props) {
         <Table>
           <TableHeader>
             <TableRow>
-              {props.tableTitles?.map((title) => (
-                <TableHead>{title}</TableHead>
+              {props.tableTitles?.map((title, key) => (
+                <TableHead key={key}>{title}</TableHead>
               ))}
             </TableRow>
           </TableHeader>

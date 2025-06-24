@@ -1,4 +1,5 @@
 import axios from "axios";
+import { xml2js } from "xml2js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -21,14 +22,13 @@ export default async function handler(req, res) {
 
     let parsedResponse;
     try {
-      const xml2js = require("xml2js");
       const parseString = xml2js.parseStringPromise;
       parsedResponse = await parseString(soapResponse.data, {
         explicitArray: false,
       });
       const opEstadoCuentaResult =
         parsedResponse?.["soap:Envelope"]?.["soap:Body"]?.OpEstadoCuentaResponse
-          .OpEstadoCuentaResult?.['diffgr:diffgram']?.NewDataSet;
+          .OpEstadoCuentaResult?.["diffgr:diffgram"]?.NewDataSet;
 
       console.log("OpTransacionesResult data ---- ", opEstadoCuentaResult);
 

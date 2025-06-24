@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../components/ui/dropdown-menu";
 import Link from "next/link";
 
 export default function DropdownUserMenu() {

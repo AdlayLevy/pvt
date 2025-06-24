@@ -50,6 +50,7 @@ export default function Transactions() {
     {
       filter: (
         <DatePicker
+        
           label="Fecha inicio: *"
           open={openStartDate}
           setOpen={() => setOpenStartDate(true)}

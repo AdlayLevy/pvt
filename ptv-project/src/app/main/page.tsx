@@ -17,9 +17,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import TableSection from "../../components/tableSection";
-import DropdownUserMenu from "../../components/dropdownUserMenu";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import DropdownUserMenu from "../../widgets/dropdownUserMenu";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import {
@@ -136,10 +134,10 @@ export default function Main() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {menu.map((item, key) => (
-                      <div>
+                      <div key={key}>
                         {item.submenu.length > 0 ? (
                           <Collapsible key={key} asChild>
-                            <SidebarMenuItem>
+                            <SidebarMenuItem >
                               <CollapsibleTrigger asChild>
                                 <SidebarMenuButton className="flex items-center py-7">
                                   <div className="flex gap-2 items-center">
