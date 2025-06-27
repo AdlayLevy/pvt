@@ -30,6 +30,7 @@ export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
   const [openStartDate, setOpenStartDate] = useState(false);
   const [openEndDate, setOpenEndDate] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const titles = [
     "ID",
@@ -50,7 +51,6 @@ export default function Transactions() {
     {
       filter: (
         <DatePicker
-        
           label="Fecha inicio: *"
           open={openStartDate}
           setOpen={() => setOpenStartDate(true)}
@@ -162,6 +162,18 @@ export default function Transactions() {
     return `${year}-${month}-${day}`;
   }
 
+  const filteredTransactions = transactions.filter(
+    (item) =>
+      item.transaccionId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.tipoMovimiento.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.monto.includes(searchTerm) ||
+      item.resultado.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.tarjeta.includes(searchTerm) ||
+      item.emisor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.tipo.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="w-full p-6">
       <TitleFilterSection
@@ -187,6 +199,8 @@ export default function Transactions() {
       ) : (
         <TableSection
           searchInput
+          searchValue={searchTerm}
+          searchOnChange={(e) => setSearchTerm(e.target.value)}
           tableToDownload={transactions}
           tableTitles={titles}
           downloadButton={
@@ -204,8 +218,8 @@ export default function Transactions() {
                   Cargando ...
                 </TableCell>
               </TableRow>
-            ) : (
-              transactions.map((item, key) => (
+            ) : filteredTransactions.length > 0 ? (
+              filteredTransactions.map((item, key) => (
                 <TableRow key={key} className="text-xs">
                   <TableCell>{item.transaccionId}</TableCell>
                   <TableCell className="text-center">
@@ -229,6 +243,15 @@ export default function Transactions() {
                   </div>
                 </TableRow>
               ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={10}
+                  className="text-center text-indigo-500 text-base"
+                >
+                  No hay información que coincida.
+                </TableCell>
+              </TableRow>
             )
           }
         />

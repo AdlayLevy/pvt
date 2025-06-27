@@ -24,16 +24,14 @@ export default function TableSection(props) {
               <input
                 data-slot="input"
                 type="text"
+                value={props.searchValue}
+                onChange={props.searchOnChange}
                 className="placeholder:text-muted-foreground flex h-9 w-full  min-w-0 bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm"
                 placeholder="Search"
               />
             </div>
           )}
-          {props.hasAddButton && (
-            <Button>
-              <Plus /> {props.buttonLabel}
-            </Button>
-          )}
+          {props.addButton}
         </div>
       </div>
 

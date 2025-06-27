@@ -23,35 +23,10 @@ export default function DailyReport() {
   const [openStartDate, setOpenStartDate] = useState(false);
   const [openEndDate, setOpenEndDate] = useState(false);
   const isMobile = useIsMobile();
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {}, []);
 
-  const data = [
-    {
-      ID: "001",
-      Nombre: "Prueba",
-      Fecha: "00/00/00",
-      NumTransacciones: 5,
-      MontoTotal: "$1000.00",
-      Comision: "$152.00",
-      Iva: "$160.00",
-      NumDevoluciones: 5,
-      MontoDevoluciones: "$450.00",
-      SaldoTrans: "$1500.00",
-    },
-    {
-      ID: "002",
-      Nombre: "Prueba",
-      Fecha: "00/00/00",
-      NumTransacciones: 5,
-      MontoTotal: "$1000.00",
-      Comision: "$152.00",
-      Iva: "$160.00",
-      NumDevoluciones: 5,
-      MontoDevoluciones: "$450.00",
-      SaldoTrans: "$1500.00",
-    },
-  ];
   const titles = [
     "Nombre",
     "Fecha",
@@ -61,7 +36,7 @@ export default function DailyReport() {
     "Iva",
     "# Devoluciones",
     "Monto Devoluciones",
-    "Saldo Trans",
+    "Saldo Transferido",
   ];
 
   const filters = [
@@ -138,6 +113,19 @@ export default function DailyReport() {
     return `${year}-${month}-${day}`;
   }
 
+  const filteredCortes = cortes.filter(
+    (item) =>
+      item.Nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.Fecha.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.NumTransacciones.includes(searchTerm) ||
+      item.MontoTotal.includes(searchTerm) ||
+      item.Comision.includes(searchTerm) ||
+      item.Iva.includes(searchTerm) ||
+      item.NumDevoluciones.includes(searchTerm) ||
+      item.MontoDevoluciones.includes(searchTerm) ||
+      item.SaldoTrans.includes(searchTerm)
+  );
+
   return (
     <div className="w-full p-6">
       <TitleFilterSection
@@ -160,6 +148,8 @@ export default function DailyReport() {
       ) : (
         <TableSection
           searchInput
+          searchValue={searchTerm}
+          searchOnChange={(e) => setSearchTerm(e.target.value)}
           tableTitles={titles}
           downloadButton={
             <Button disabled={cortes.length > 0 ? false : true}>
@@ -176,8 +166,8 @@ export default function DailyReport() {
                   Cargando ...
                 </TableCell>
               </TableRow>
-            ) : (
-              cortes.map((item, key) => (
+            ) : filteredCortes.length > 0 ? (
+              filteredCortes.map((item, key) => (
                 <TableRow key={key}>
                   <TableCell>{item.Nombre}</TableCell>
                   <TableCell>{item.Fecha}</TableCell>
@@ -194,6 +184,15 @@ export default function DailyReport() {
                   <TableCell>{item.SaldoTrans}</TableCell>
                 </TableRow>
               ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={10}
+                  className="text-center text-indigo-500 text-base"
+                >
+                  No hay información que coincida.
+                </TableCell>
+              </TableRow>
             )
           }
         />

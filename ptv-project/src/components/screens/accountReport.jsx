@@ -17,12 +17,11 @@ export default function AccountReport() {
   const [subCommerceValue, setSubCommerceValue] = useState("");
   const [versionValue, setVersionValue] = useState("");
   const isMobile = useIsMobile();
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {}, []);
 
   const titles = ["Item", "Concepto", "Total"];
-
-  const data = [];
 
   const filters = [
     {
@@ -88,6 +87,13 @@ export default function AccountReport() {
     }
   };
 
+  const filteredReport = report.filter(
+    (item) =>
+      item.Item.includes(searchTerm) ||
+      item.Concepto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.Total.includes(searchTerm)
+  );
+
   return (
     <div className="w-full p-6">
       <TitleFilterSection
@@ -136,6 +142,8 @@ export default function AccountReport() {
       ) : (
         <TableSection
           searchInput
+          searchValue={searchTerm}
+          searchOnChange={(e) => setSearchTerm(e.target.value)}
           tableTitles={titles}
           downloadButton={
             <Button disabled={report.length > 0 ? false : true}>
@@ -152,14 +160,23 @@ export default function AccountReport() {
                   Cargando ...
                 </TableCell>
               </TableRow>
-            ) : (
-              report.map((item, key) => (
+            ) : filteredReport.length > 0 ? (
+              filteredReport.map((item, key) => (
                 <TableRow key={key}>
                   <TableCell>{item.Item}</TableCell>
                   <TableCell>{item.Concepto}</TableCell>
                   <TableCell>{item.Total}</TableCell>
                 </TableRow>
               ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={10}
+                  className="text-center text-indigo-500 text-base"
+                >
+                  No hay información que coincida.
+                </TableCell>
+              </TableRow>
             )
           }
         />
