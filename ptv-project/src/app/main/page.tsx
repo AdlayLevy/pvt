@@ -31,6 +31,7 @@ import {
 import DailyReport from "../../components/screens/dailyReport";
 import Transactions from "../../components/screens/transactions";
 import AccountReport from "../../components/screens/accountReport";
+import Users from '../../components/screens/users'
 import {
   Collapsible,
   CollapsibleContent,
@@ -79,21 +80,18 @@ export default function Main() {
     //   submenu: ["Por Comercio"],
     //   icon: <ShieldCheck />,
     // },
-    {
-      title: "Usuarios",
-      submenu: [
-        "Admin de Cadenas",
-        "Admin de Comercios",
-        "Usuarios de Comercios",
-      ],
-      icon: <User />,
-    },
+    // {
+    //   title: "Usuarios",
+    //   submenu: [],
+    //   icon: <User />,
+    // },
   ];
 
   const submenu = {
     transacciones: "Transacciones",
     comercios: "Comercios",
     terminales: "Terminales",
+    usuarios: 'Usuarios',
     movimientos: "Movimientos",
     contracargos: "Contracargos",
     conciliaciones: "Conciliaciones",
@@ -137,7 +135,7 @@ export default function Main() {
                       <div key={key}>
                         {item.submenu.length > 0 ? (
                           <Collapsible key={key} asChild>
-                            <SidebarMenuItem >
+                            <SidebarMenuItem>
                               <CollapsibleTrigger asChild>
                                 <SidebarMenuButton className="flex items-center py-7">
                                   <div className="flex gap-2 items-center">
@@ -208,9 +206,7 @@ export default function Main() {
               {activeTab === submenu.transacciones && <Transactions />}
               {activeTab === submenu.diario && <DailyReport />}
               {activeTab === submenu.estadoCuenta && <AccountReport />}
-              {activeTab === submenu.adminCadenas && <AdminCadenas />}
-              {activeTab === submenu.adminComercios && <AdminComercios />}
-              {activeTab === submenu.usuariosComer && <UsuariosComercios />}
+              {activeTab === submenu.usuarios && <Users />}
             </div>
           </SidebarInset>
         </SidebarProvider>
@@ -235,27 +231,4 @@ function Tableros() {
   );
 }
 
-function AdminCadenas() {
-  return (
-    <div className="w-full p-6">
-      <SectionTitle title="Administrador de Cadenas" />
-      <TableSection hasAddButton buttonLabel="Añadir item" />
-    </div>
-  );
-}
-function AdminComercios() {
-  return (
-    <div className="w-full p-6">
-      <SectionTitle title="Administrador de Comercios" />
-      <TableSection hasAddButton buttonLabel="Añadir item" />
-    </div>
-  );
-}
-function UsuariosComercios() {
-  return (
-    <div className="w-full p-6">
-      <SectionTitle title="Usuarios de Comercios" />
-      <TableSection hasAddButton buttonLabel="Añadir usuario" />
-    </div>
-  );
-}
+
