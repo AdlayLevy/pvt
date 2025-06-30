@@ -10,7 +10,7 @@ async function main() {
       name: "",
       email: "",
       password: "",
-      phone: 0,
+      phone: '',
       isActive: true,
       role: "ADMIN",
       createdAt: "",
