@@ -20,6 +20,13 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CSVLink } from "react-csv";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 export default function Transactions() {
   const [startDate, setStartDate] = useState("");
@@ -231,16 +238,19 @@ export default function Transactions() {
                   <TableCell>{item.emisor}</TableCell>
                   <TableCell>{item.marca}</TableCell>
                   <TableCell>{item.tipo}</TableCell>
-                  <div className="flex justify-center">
-                    <AlertDialog>
-                      <AlertDialogTrigger>
-                        <div className="p-6">
-                          <Plus size={20} />
-                        </div>
-                      </AlertDialogTrigger>
-                      <MoreInformation info={item} />
-                    </AlertDialog>
-                  </div>
+                  <TableCell className="text-center">
+                    <Dialog>
+                      <DialogTrigger>
+                        <Plus />
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Información de Transacción</DialogTitle>
+                        </DialogHeader>
+                        <MoreInformation info={item} />
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
@@ -263,87 +273,67 @@ export default function Transactions() {
 function MoreInformation(props) {
   const TextTitle = (props) => {
     return (
-      <div>
+      <div className="text-sm">
         <span className="font-bold">{props.title} </span>
         {props.info}
       </div>
     );
   };
   return (
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Detalles de Transacción</AlertDialogTitle>
-        <AlertDialogDescription>
-          <div className="grid grid-cols-2">
-            <TextTitle title="Comercio Id: " info={props.info.comercioId} />
-            <TextTitle title="Comercio: " info={props.info.comercio} />
-            <TextTitle
-              title="Tipo de Movimiento: "
-              info={props.info.tipoMovimiento}
-            />
-            <TextTitle
-              title="Transacción Id: "
-              info={props.info.transaccionId}
-            />
-            <TextTitle title="Monto:" info={props.info.monto} />
-            <TextTitle title="Propina: " info={props.info.propina} />
-            <TextTitle title="Comisión: " info={props.info.comision} />
-            <TextTitle title="Iva: " info={props.info.iva} />
-            <TextTitle
-              title="Código de Respuesta: "
-              info={props.info.codigoRespuesta}
-            />
-            <TextTitle title="Resultado: " info={props.info.resultado} />
-            <TextTitle title="Referencia: " info={props.info.referencia} />
-            <TextTitle
-              title="Referencia de Comercio: "
-              info={props.info.referenciaComercio}
-            />
-            <TextTitle
-              title="Código de Aprobación: "
-              info={props.info.codigoAprobacion}
-            />
-            <TextTitle
-              title="Fecha de Transacción: "
-              info={props.info.fechaTransaccion}
-            />
-            <TextTitle
-              title="Hora de Transacción: "
-              info={props.info.horaTransaccion}
-            />
-            <TextTitle
-              title="Fecha de Registro: "
-              info={props.info.fechaRegistro}
-            />
+    <div className="grid grid-cols-2">
+      <TextTitle title="Comercio Id: " info={props.info.comercioId} />
+      <TextTitle title="Comercio: " info={props.info.comercio} />
+      <TextTitle
+        title="Tipo de Movimiento: "
+        info={props.info.tipoMovimiento}
+      />
+      <TextTitle title="Transacción Id: " info={props.info.transaccionId} />
+      <TextTitle title="Monto:" info={props.info.monto} />
+      <TextTitle title="Propina: " info={props.info.propina} />
+      <TextTitle title="Comisión: " info={props.info.comision} />
+      <TextTitle title="Iva: " info={props.info.iva} />
+      <TextTitle
+        title="Código de Respuesta: "
+        info={props.info.codigoRespuesta}
+      />
+      <TextTitle title="Resultado: " info={props.info.resultado} />
+      <TextTitle title="Referencia: " info={props.info.referencia} />
+      <TextTitle
+        title="Referencia de Comercio: "
+        info={props.info.referenciaComercio}
+      />
+      <TextTitle
+        title="Código de Aprobación: "
+        info={props.info.codigoAprobacion}
+      />
+      <TextTitle
+        title="Fecha de Transacción: "
+        info={props.info.fechaTransaccion}
+      />
+      <TextTitle
+        title="Hora de Transacción: "
+        info={props.info.horaTransaccion}
+      />
+      <TextTitle title="Fecha de Registro: " info={props.info.fechaRegistro} />
 
-            <TextTitle title="Tarjeta: " info={props.info.tarjeta} />
-            <TextTitle
-              title="Mes - Año: "
-              info={`${props.info.mes}/${props.info.anio} `}
-            />
-            <TextTitle title="Emisor: " info={props.info.emisor} />
-            <TextTitle title="Marca: " info={props.info.marca} />
-            <TextTitle title="Tipo: " info={props.info.tipo} />
-            <TextTitle title="Afiliación: " info={props.info.afiliacion} />
-            <TextTitle title="AID: " info={props.info.AID} />
-            <TextTitle title="TVR: " info={props.info.TVR} />
-            <TextTitle title="TSI: " info={props.info.TSI} />
-            <TextTitle title="APN: " info={props.info.APN} />
-            <TextTitle title="AL: " info={props.info.AL} />
-            <TextTitle title="ARQC: " info={props.info.ARQC} />
-            <TextTitle
-              title="Serie de Lector: "
-              info={props.info.serieLector}
-            />
-            <TextTitle title="Sub Comercio: " info={props.info.subComercio} />
-            <TextTitle title="Versión: " info={props.info.version} />
-          </div>
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>Cerrar</AlertDialogCancel>
-        {/* <AlertDialogAction>Continue</AlertDialogAction> */}
-      </AlertDialogFooter>
-    </AlertDialogContent>
+      <TextTitle title="Tarjeta: " info={props.info.tarjeta} />
+      <TextTitle
+        title="Mes - Año: "
+        info={`${props.info.mes}/${props.info.anio} `}
+      />
+      <TextTitle title="Emisor: " info={props.info.emisor} />
+      <TextTitle title="Marca: " info={props.info.marca} />
+      <TextTitle title="Tipo: " info={props.info.tipo} />
+      <TextTitle title="Afiliación: " info={props.info.afiliacion} />
+      <TextTitle title="AID: " info={props.info.AID} />
+      <TextTitle title="TVR: " info={props.info.TVR} />
+      <TextTitle title="TSI: " info={props.info.TSI} />
+      <TextTitle title="APN: " info={props.info.APN} />
+      <TextTitle title="AL: " info={props.info.AL} />
+      <TextTitle title="ARQC: " info={props.info.ARQC} />
+      <TextTitle title="Serie de Lector: " info={props.info.serieLector} />
+      <TextTitle title="Sub Comercio: " info={props.info.subComercio} />
+      <TextTitle title="Versión: " info={props.info.version} />
+    </div>
   );
 }
