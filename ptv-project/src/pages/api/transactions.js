@@ -1,4 +1,5 @@
 import axios from "axios";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const xml2js = require("xml2js");
 
 export default async function handler(req, res) {
