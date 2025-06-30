@@ -1,5 +1,5 @@
 import axios from "axios";
-import { xml2js } from "xml2js";
+const xml2js = require("xml2js");
 
 export default async function handler(req, res) {
   // Solo permitir solicitudes POST para esta API Route
@@ -23,6 +23,7 @@ export default async function handler(req, res) {
     let parsedResponse;
 
     try {
+      
       const parseString = xml2js.parseStringPromise; // Para parsear XML
       parsedResponse = await parseString(soapResponse.data, {
         explicitArray: false,
