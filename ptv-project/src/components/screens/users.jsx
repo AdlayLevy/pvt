@@ -11,7 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Edit, Plus } from "lucide-react";
+import { Edit, PencilLine, Plus } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -152,10 +152,9 @@ export default function Users() {
       <TitleFilterSection titleSection="Usuarios" />
       {isMobile ? (
         <div className="p-6 bg-gray-50 rounded-lg ">
-          <p className="text-center">
+          <p className="text-center text-[#B2AAF1]">
             Demasiados datos para mostrar en este dispositivo.
           </p>
-          <div className="flex p-6 justify-center">Nothing to show</div>
         </div>
       ) : (
         <TableSection
@@ -177,7 +176,7 @@ export default function Users() {
                 </DialogHeader>
                 <div className="grid gap-4">
                   <div className="grid gap-3">
-                    <Label htmlFor="name">Nombre</Label>
+                    <Label htmlFor="name" className="text-gray-600">Nombre</Label>
                     <Input
                       id="name"
                       name="name"
@@ -187,7 +186,7 @@ export default function Users() {
                     />
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="email">Correo</Label>
+                    <Label htmlFor="email" className="text-gray-600">Correo</Label>
                     <Input
                       id="email"
                       name="email"
@@ -198,7 +197,7 @@ export default function Users() {
                     />
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="password">Contraseña</Label>
+                    <Label htmlFor="password" className="text-gray-600">Contraseña</Label>
                     <Input
                       id="password"
                       name="password"
@@ -208,7 +207,7 @@ export default function Users() {
                     />
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="phone">Teléfono</Label>
+                    <Label htmlFor="phone" className="text-gray-600">Teléfono</Label>
                     <Input
                       id="phone"
                       name="phone"
@@ -219,7 +218,7 @@ export default function Users() {
                     />
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="role">Rol</Label>
+                    <Label htmlFor="role" className="text-gray-600">Rol</Label>
                     <Select
                       value={role}
                       onValueChange={(e) => {
@@ -259,14 +258,14 @@ export default function Users() {
               <TableRow>
                 <TableCell
                   colSpan={10}
-                  className="text-center text-indigo-500 text-base"
+                  className="text-center text-[#B2AAF1] text-base"
                 >
                   Cargando ...
                 </TableCell>
               </TableRow>
             ) : filteredUsers.length > 0 ? (
               filteredUsers.map((user, key) => (
-                <TableRow key={key} className="text-xs">
+                <TableRow key={key} className="text-xs text-gray-600">
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.phone}</TableCell>
@@ -279,7 +278,7 @@ export default function Users() {
                   <TableCell className="">
                     <Dialog>
                       <DialogTrigger>
-                        <Edit />
+                        <PencilLine size={22} color="#121878" />
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
@@ -287,7 +286,7 @@ export default function Users() {
                         </DialogHeader>
                         <div className="grid gap-4">
                           <div className="grid gap-3">
-                            <Label>Nombre</Label>
+                            <Label className="text-gray-600">Nombre</Label>
                             <Input
                               id="name"
                               name="name"
@@ -296,7 +295,7 @@ export default function Users() {
                             />
                           </div>
                           <div className="grid gap-3">
-                            <Label>Contraseña</Label>
+                            <Label className="text-gray-600">Contraseña</Label>
                             <Input
                               id="psw"
                               name="psw"
@@ -305,7 +304,7 @@ export default function Users() {
                             />
                           </div>
                           <div className="grid gap-3">
-                            <Label>Teléfono</Label>
+                            <Label className="text-gray-600">Teléfono</Label>
                             <Input
                               id="phone"
                               name="phone"
@@ -314,7 +313,7 @@ export default function Users() {
                             />
                           </div>
                           <div className="grid gap-3">
-                            <Label>Rol</Label>
+                            <Label className="text-gray-600">Rol</Label>
                             <Select
                               onValueChange={(e) => setRole(e)}
                               defaultValue={user.role}
@@ -334,16 +333,12 @@ export default function Users() {
                             </Select>
                           </div>
                           <div className=" gap-3 flex">
-                            <Label>Inactivo</Label>
+                            <Label className="text-gray-600">Inactivo</Label>
                             <Switch
-                              checked={
-                                status === user.isActive
-                                  ? status
-                                  : user.isActive
-                              }
+                              checked={status}
                               onCheckedChange={(e) => setStatus(e)}
                             />
-                            <Label>Activo</Label>
+                            <Label className="text-gray-600">Activo</Label>
                           </div>
                         </div>
                         <DialogFooter>
@@ -360,7 +355,7 @@ export default function Users() {
               <TableRow>
                 <TableCell
                   colSpan={10}
-                  className="text-center text-indigo-500 text-base"
+                  className="text-center text-[#B2AAF1] text-base"
                 >
                   No hay información que coincida.
                 </TableCell>

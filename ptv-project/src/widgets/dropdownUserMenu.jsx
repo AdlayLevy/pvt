@@ -15,7 +15,7 @@ export default function DropdownUserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="bg-indigo-600 rounded-full p-2">
+        <button className="bg-[#0d1156] rounded-full p-2">
           <User2 size={28} color="white" />
         </button>
       </DropdownMenuTrigger>

@@ -15,18 +15,18 @@ export default function TableSection(props) {
   return (
     <div className="p-6 bg-gray-50 rounded-lg">
       <div className="flex items-center justify-between pb-3">
-        <h1 className="text-sm font-bold pb-3">Table</h1>
+        <h1 className="text-sm font-bold pb-3 text-[#0d1156]">Table</h1>
         <div className="flex items-center space-x-6">
           {props.downloadButton}
           {props.searchInput && (
             <div className="flex items-center border rounded-md selection:bg-primary selection:text-primary-foreground pl-3">
-              <Search />
+              <Search color="#0d1156"/>
               <input
                 data-slot="input"
                 type="text"
                 value={props.searchValue}
                 onChange={props.searchOnChange}
-                className="placeholder:text-muted-foreground flex h-9 w-full  min-w-0 bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm"
+                className="placeholder:text-muted-foreground flex h-9 w-full  min-w-0 bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm text-gray-500"
                 placeholder="Search"
               />
             </div>
@@ -40,7 +40,7 @@ export default function TableSection(props) {
           <TableHeader>
             <TableRow>
               {props.tableTitles?.map((title, key) => (
-                <TableHead key={key}>{title}</TableHead>
+                <TableHead className="text-[#0d1156]" key={key}>{title}</TableHead>
               ))}
             </TableRow>
           </TableHeader>

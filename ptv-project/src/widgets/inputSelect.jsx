@@ -11,7 +11,7 @@ import {
 export default function InputSelect(props) {
   return (
     <div>
-      <div className="text-sm pb-2">{props.label}</div>
+      <div className="text-sm pb-2 text-gray-600">{props.label}</div>
       <Select onValueChange={props.setValue}>
         <SelectTrigger className="w-[200px] ">
           <SelectValue placeholder="Select item" />

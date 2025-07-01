@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Info, Plus } from "lucide-react";
 import TableSection from "../tableSection";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
@@ -193,7 +193,7 @@ export default function Transactions() {
       />
       {isMobile ? (
         <div className="p-6 bg-gray-50 rounded-lg ">
-          <p className="text-center">
+          <p className="text-center text-[#B2AAF1]">
             Demasiados datos para mostrar en este dispositivo.
           </p>
 
@@ -220,14 +220,14 @@ export default function Transactions() {
               <TableRow>
                 <TableCell
                   colSpan={10}
-                  className="text-center text-indigo-500 text-base"
+                  className="text-center text-[#B2AAF1] text-base"
                 >
                   Cargando ...
                 </TableCell>
               </TableRow>
             ) : filteredTransactions.length > 0 ? (
               filteredTransactions.map((item, key) => (
-                <TableRow key={key} className="text-xs">
+                <TableRow key={key} className="text-xs text-gray-600">
                   <TableCell>{item.transaccionId}</TableCell>
                   <TableCell className="text-center">
                     {item.tipoMovimiento}
@@ -241,11 +241,11 @@ export default function Transactions() {
                   <TableCell className="text-center">
                     <Dialog>
                       <DialogTrigger>
-                        <Plus />
+                        <Info size={22} color="#121878"/>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>Información de Transacción</DialogTitle>
+                          <DialogTitle >Información de Transacción</DialogTitle>
                         </DialogHeader>
                         <MoreInformation info={item} />
                       </DialogContent>
@@ -257,7 +257,7 @@ export default function Transactions() {
               <TableRow>
                 <TableCell
                   colSpan={10}
-                  className="text-center text-indigo-500 text-base"
+                  className="text-center text-[#a399ee] text-base"
                 >
                   No hay información que coincida.
                 </TableCell>
@@ -273,14 +273,14 @@ export default function Transactions() {
 function MoreInformation(props) {
   const TextTitle = (props) => {
     return (
-      <div className="text-sm">
+      <div className="text-sm text-gray-600">
         <span className="font-bold">{props.title} </span>
         {props.info}
       </div>
     );
   };
   return (
-    <div className="grid grid-cols-2">
+    <div className="grid grid-cols-2 space-x-10">
       <TextTitle title="Comercio Id: " info={props.info.comercioId} />
       <TextTitle title="Comercio: " info={props.info.comercio} />
       <TextTitle

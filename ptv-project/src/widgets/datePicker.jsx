@@ -11,18 +11,18 @@ import { cn } from "@/lib/utils";
 export default function DatePicker(props) {
   return (
     <div>
-      <div className="text-sm pb-2"> {props.label}</div>
+      <div className="text-sm pb-2 text-gray-600"> {props.label}</div>
       <Popover open={props.open} onOpenChange={props.setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             data-empty={!props.date}
             className={cn(
-              "w-[200px] justify-start text-left font-normal",
+              "w-[200px] justify-start text-left font-normal text-gray-500",
               !props.date && "text-muted-foreground"
             )}
           >
-            <Calendar1 />
+            <Calendar1 color="#0d1156" />
             {props.date || <span>Seleciona una fecha</span>}
           </Button>
         </PopoverTrigger>

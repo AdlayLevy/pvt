@@ -103,10 +103,10 @@ export default function AccountReport() {
         buttonFunction={() => fetchAccountReport()}
       />
       <div className="p-6 bg-gray-50 mb-6 rounded-lg">
-        <h1 className="text-sm font-bold pb-3">Cliente</h1>
-        <div className="grid grid-cols-4">
+        <h1 className="text-sm font-bold pb-3 text-[#0d1156]">Cliente</h1>
+        <div className="grid grid-cols-4 text-gray-600">
           <div>
-            <span className="text-sm font-semibold">Razón Soacial: </span>
+            <span className="text-sm font-semibold">Razón Social: </span>
             {infoCliente.RazonSocial}
           </div>
           <div>
@@ -130,7 +130,7 @@ export default function AccountReport() {
 
       {isMobile ? (
         <div className="p-6 bg-gray-50 rounded-lg">
-          <p className="text-center">
+          <p className="text-center text-[#B2AAF1] ">
             Demasiados datos para mostrar en este dispositivo
           </p>
           <div className="flex p-6 justify-center">
@@ -155,14 +155,14 @@ export default function AccountReport() {
               <TableRow>
                 <TableCell
                   colSpan={10}
-                  className="text-center text-indigo-500 text-base"
+                  className="text-center text-[#B2AAF1] text-base"
                 >
                   Cargando ...
                 </TableCell>
               </TableRow>
             ) : filteredReport.length > 0 ? (
               filteredReport.map((item, key) => (
-                <TableRow key={key}>
+                <TableRow key={key} className="text-sm text-gray-600">
                   <TableCell>{item.Item}</TableCell>
                   <TableCell>{item.Concepto}</TableCell>
                   <TableCell>{item.Total}</TableCell>
@@ -172,7 +172,7 @@ export default function AccountReport() {
               <TableRow>
                 <TableCell
                   colSpan={10}
-                  className="text-center text-indigo-500 text-base"
+                  className="text-center text-[#B2AAF1] text-base"
                 >
                   No hay información que coincida.
                 </TableCell>

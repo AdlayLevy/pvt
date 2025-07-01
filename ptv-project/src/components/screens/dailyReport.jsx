@@ -136,7 +136,7 @@ export default function DailyReport() {
       />
       {isMobile ? (
         <div className="p-6 bg-gray-50 rounded-lg">
-          <p className="text-center">
+          <p className="text-center text-[#B2AAF1]">
             Demasiados datos para mostrar en este dispositivo
           </p>
           <div className="flex p-6 justify-center">
@@ -161,14 +161,14 @@ export default function DailyReport() {
               <TableRow>
                 <TableCell
                   colSpan={10}
-                  className="text-center text-indigo-500 text-base"
+                  className="text-center text-[#B2AAF1]  text-base"
                 >
                   Cargando ...
                 </TableCell>
               </TableRow>
             ) : filteredCortes.length > 0 ? (
               filteredCortes.map((item, key) => (
-                <TableRow key={key}>
+                <TableRow key={key} className="text-xs text-gray-600">
                   <TableCell>{item.Nombre}</TableCell>
                   <TableCell>{item.Fecha}</TableCell>
                   <TableCell className="text-center">
@@ -188,7 +188,7 @@ export default function DailyReport() {
               <TableRow>
                 <TableCell
                   colSpan={10}
-                  className="text-center text-indigo-500 text-base"
+                  className="text-center text-[#B2AAF1] text-base"
                 >
                   No hay información que coincida.
                 </TableCell>
