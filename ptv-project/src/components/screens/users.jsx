@@ -68,6 +68,10 @@ export default function Users() {
 
   const createUser = async () => {
     toast("Creando usuario...");
+    setUserName("");
+    setEmail("");
+    setPassword(""), setPhone("");
+    setRole("");
     try {
       const response = await fetch("/api/users_services", {
         method: "POST",
@@ -121,6 +125,10 @@ export default function Users() {
       if (!response.ok) {
         toast(`Error updating user. Status: ${response.status}`);
       }
+      setUserName("");
+      setEmail("");
+      setPassword(""), setPhone("");
+      setRole("");
       fetchUsers();
     } catch (error) {
       console.log(error, ":Error updating user");
@@ -328,8 +336,11 @@ export default function Users() {
                           <div className=" gap-3 flex">
                             <Label>Inactivo</Label>
                             <Switch
-                              defaultValue={user.isActive}
-                              checked={status}
+                              checked={
+                                status === user.isActive
+                                  ? status
+                                  : user.isActive
+                              }
                               onCheckedChange={(e) => setStatus(e)}
                             />
                             <Label>Activo</Label>
