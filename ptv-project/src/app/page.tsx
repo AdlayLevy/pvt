@@ -99,7 +99,7 @@ export default function Home() {
             <div className="mt-10 flex items-center justify-end gap-x-6">
               <Link
                 href="/main"
-                className="rounded-md bg-[#0D1156] px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="rounded-md bg-[#0D1156] px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-[#151b89] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Login
               </Link>
