@@ -117,13 +117,8 @@ export default function Main() {
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader>
-              <div className="flex justify-center p-6 space-x-2 items-center">
-                <img
-                  alt=""
-                  src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                  className="h-8 w-auto"
-                />
-                <div>Company Name</div>
+              <div className="flex justify-center p-3 space-x-2 items-center">
+                <img alt="" src="/proxcard.svg" className="h-18 w-auto" />
               </div>
             </SidebarHeader>
             <SidebarContent>
@@ -186,12 +181,7 @@ export default function Main() {
               <SidebarTrigger />
               <Separator orientation="vertical" className="mr-2 h-4" />
               <div className="flex lg:flex-1 space-x-2 items-center">
-                <img
-                  alt=""
-                  src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                  className="h-8 w-auto"
-                />
-                <div>Company Name</div>
+                <img alt="" src="/proxcard.svg" className="h-8 w-auto" />
               </div>
               <div className="flex items-center space-x-6">
                 {/* <div className="flex items-center space-x-2">
