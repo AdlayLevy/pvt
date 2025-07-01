@@ -38,6 +38,7 @@ export default function Users() {
   const [createDate, setCreateDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [status, setStatus] = useState(false);
+  const [openCreateUser, setOpenCreateUser] = useState(false);
 
   const isMobile = useIsMobile();
 
@@ -67,17 +68,10 @@ export default function Users() {
 
   const createUser = async () => {
     toast("Creando usuario...");
-    console.log("NAME:", userName);
-    console.log("EMAIL:", email);
-    console.log("PSW:", password);
-    console.log("PHONE:", phone);
-    console.log("ROLE:", role);
     try {
       const response = await fetch("/api/users_services", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: userName,
           email: email,
@@ -89,21 +83,22 @@ export default function Users() {
       if (!response.ok) {
         toast(`Error creating user. Status:${response.status}`);
       }
-      const newUser = response.json();
+      // const newUser = response.json();
       // add new user to users array
-      setUsers((prevUsers) => [...prevUsers, newUser]);
+      // setUsers((prevUsers) => [...prevUsers, newUser]);
       // clean inputs
       setUserName("");
       setEmail("");
       setPassword(""), setPhone("");
       setRole("");
+      setOpenCreateUser(false);
+      // reload users
       fetchUsers();
-      toast.success("Usuario creado correctamente");
     } catch (error) {
       console.log(error);
-      toast.error(
-        "Hubo un error al crear usuario, intente de nuevo más tarde."
-      );
+      toast.error("Error al crear usuario. Intente de nuevo más tarde.");
+    } finally {
+      toast.success("Usuario creado");
     }
   };
 
@@ -130,17 +125,19 @@ export default function Users() {
     } catch (error) {
       console.log(error, ":Error updating user");
       toast.error("Error actualizando usuario. Intente de nuevo más tarde");
+    } finally {
+      toast.success("Usuario actualizado.");
     }
   };
 
   const filteredUsers = users.filter(
-    (item) =>
-      item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.phone?.includes(searchTerm) ||
-      item.role.toLowerCase().includes(searchTerm.toLowerCase())
+    (user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.phone?.includes(searchTerm)
   );
+
   return (
     <div className="w-full p-6">
       <TitleFilterSection titleSection="Usuarios" />
@@ -158,9 +155,9 @@ export default function Users() {
           searchOnChange={(e) => setSearchTerm(e.target.value)}
           hasAddButton
           addButton={
-            <Dialog>
+            <Dialog open={openCreateUser} onOpenChange={setOpenCreateUser}>
               <DialogTrigger asChild>
-                <Button>
+                <Button onClick={() => setOpenCreateUser(true)}>
                   <Plus /> Añadir Usuario
                 </Button>
               </DialogTrigger>
@@ -226,7 +223,7 @@ export default function Users() {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Rol</SelectLabel>
-                          <SelectItem value="USER">Ususario</SelectItem>
+                          <SelectItem value="USER">User</SelectItem>
                           <SelectItem value="ADMIN">Administrador</SelectItem>
                         </SelectGroup>
                       </SelectContent>
@@ -234,13 +231,7 @@ export default function Users() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button
-                    onClick={() => {
-                      createUser();
-                    }}
-                  >
-                    Guardar
-                  </Button>
+                  <Button onClick={() => createUser()}>Guardar</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -271,7 +262,7 @@ export default function Users() {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.phone}</TableCell>
                   <TableCell>
-                    {user.role === "ADMIN" ? "Administrador" : "Usuario"}
+                    {user.role == "ADMIN" ? "Administrador" : "Usuario"}
                   </TableCell>
                   <TableCell>{user.isActive ? "Activo" : "Inactivo"}</TableCell>
                   <TableCell>{user.createdAt}</TableCell>
@@ -338,10 +329,7 @@ export default function Users() {
                             <Switch
                               defaultValue={user.isActive}
                               checked={status}
-                              onCheckedChange={(e) => {
-                                console.log(e);
-                                setStatus(e);
-                              }}
+                              onCheckedChange={(e) => setStatus(e)}
                             />
                             <Label>Activo</Label>
                           </div>

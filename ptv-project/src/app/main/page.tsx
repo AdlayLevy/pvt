@@ -31,7 +31,7 @@ import {
 import DailyReport from "../../components/screens/dailyReport";
 import Transactions from "../../components/screens/transactions";
 import AccountReport from "../../components/screens/accountReport";
-import Users from '../../components/screens/users'
+import Users from "../../components/screens/users";
 import {
   Collapsible,
   CollapsibleContent,
@@ -80,18 +80,18 @@ export default function Main() {
     //   submenu: ["Por Comercio"],
     //   icon: <ShieldCheck />,
     // },
-    // {
-    //   title: "Usuarios",
-    //   submenu: [],
-    //   icon: <User />,
-    // },
+    {
+      title: "Usuarios",
+      submenu: [],
+      icon: <User />,
+    },
   ];
 
   const submenu = {
     transacciones: "Transacciones",
     comercios: "Comercios",
     terminales: "Terminales",
-    usuarios: 'Usuarios',
+    usuarios: "Usuarios",
     movimientos: "Movimientos",
     contracargos: "Contracargos",
     conciliaciones: "Conciliaciones",
@@ -230,5 +230,3 @@ function Tableros() {
     </div>
   );
 }
-
-
