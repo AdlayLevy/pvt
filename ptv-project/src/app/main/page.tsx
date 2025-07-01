@@ -40,11 +40,11 @@ import {
 
 export default function Main() {
   const menu = [
-    {
-      title: "Tableros",
-      submenu: [],
-      icon: <TableProperties />,
-    },
+    // {
+    //   title: "Tableros",
+    //   submenu: [],
+    //   icon: <TableProperties />,
+    // },
     {
       title: "Transacciones",
       submenu: [],

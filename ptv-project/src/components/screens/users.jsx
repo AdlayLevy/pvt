@@ -135,6 +135,7 @@ export default function Users() {
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.createdAt.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.phone?.includes(searchTerm)
   );
 
